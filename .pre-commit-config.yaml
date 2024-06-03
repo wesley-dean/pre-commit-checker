@@ -1,0 +1,27 @@
+---
+# pre-commit is a linter runner and GitHub hook manager
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# Run `pre-commit autoupdate` now and then, why don't ya?
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: c4a0b883114b00d8d76b479c820ce7950211c99b # frozen: v4.5.0 # pragma: allowlist secret
+    hooks:
+      - id: detect-private-key
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: c4a0b883114b00d8d76b479c820ce7950211c99b # frozen: v4.5.0 # pragma: allowlist secret
+    hooks:
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: e815c559e3ac76227e8e7463cf3a6598b715687b # frozen: v8.18.1 # pragma: allowlist secret
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: 9abc55ee9fe266d06d4f64d301c0bf71b24ca3aa # frozen: v1.4.0 # pragma: allowlist secret
+    hooks:
+      - id: detect-secrets
