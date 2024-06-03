@@ -1,2 +1,5 @@
 # pre-commit-checker
-A tool to determine if an org's repos have pre-commit configs
+
+This is a tool to determine if a GitHub organization's repositories
+have `.pre-commit-config.yaml` files or not; if they do not, it will
+check to see if an issue exists to create that file.
