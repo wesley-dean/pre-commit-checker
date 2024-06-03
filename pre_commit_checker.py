@@ -17,6 +17,7 @@ a message (eventually it'll create an issue).
 import logging
 import os
 
+from jinja2 import Environment, FileSystemLoader
 from github import Github
 from github.GithubException import UnknownObjectException
 from dotenv import load_dotenv
@@ -25,10 +26,29 @@ load_dotenv()
 PAT = os.environ["PAT"]
 ORG = os.environ["ORG"]
 
-if "MISSING_ISSUE_TITLE" in os.environ:
-    MISSING_ISSUE_TITLE = os.environ["MISSING_ISSUE_TITLE"]
-else:
-    MISSING_ISSUE_TITLE = "Missing pre-commit configuration"
+MISSING_ISSUE_TITLE = os.getenv(
+    "MISSING_ISSUE_TITLE", "Missing pre-commit configuration"
+)
+
+PRE_COMMIT_CONFIG_FILENAME = os.getenv(
+    "PRE_COMMIT_CONFIG_FILENAME",
+    ".pre-commit-config.yaml"
+)
+
+MISSING_ISSUE_BODY_FILENAME = os.getenv(
+    "MISSING_ISSUE_BODY_FILENAME",
+    "sample-issue.j2"
+)
+
+TEMPLATES_DIRECTORY = os.getenv(
+    "TEMPLATES_DIRECTORY",
+    "templates"
+)
+
+#SAMPLE_PRE_COMMIT_CONFIG = os.getenv(
+#    "SAMPLE_PRE_COMMIT_CONFIG",
+#    "sample-pre-commit-config.yaml"
+#)
 
 
 def has_pre_commit_issue(repository):
@@ -79,7 +99,7 @@ def has_pre_commit(repository):
     """
 
     try:
-        pre_commit_content = repository.get_contents(path=".pre-commit-config.yaml")
+        pre_commit_content = repository.get_contents(path=PRE_COMMIT_CONFIG_FILENAME)
     except UnknownObjectException:
         logging.debug("missing pre-commit config")
         return False
@@ -89,6 +109,36 @@ def has_pre_commit(repository):
         return False
 
     return True
+
+
+def create_issue(repository):
+    """
+    @fn create_issue()
+    @brief create an issue for tracking adding a pre-commit config file
+    @details
+    Given a repository, create an issue for tracking the addition of a
+    pre-commit configuration file in that repository.
+    @param repository the repo to hold the issue
+    @returns the id of the issue that was created
+    @par Example
+    @code
+    create_issue(repo)
+    @endcode
+    """
+
+    j2_environment = Environment(loader = FileSystemLoader(TEMPLATES_DIRECTORY))
+
+    issue_template = j2_environment.get_template(MISSING_ISSUE_BODY_FILENAME)
+
+    issue_body = issue_template.render(
+        repository = repository
+    )
+
+    issue = repository.create_issue(title=MISSING_ISSUE_TITLE,
+            body=issue_body)
+
+
+    return issue.id
 
 
 def main():
