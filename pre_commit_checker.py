@@ -52,11 +52,12 @@ def has_pre_commit_issue(repository):
     @endcode
     """
 
-    for issue in repository.get_issues(state = 'open'):
+    for issue in repository.get_issues(state="open"):
         if issue.title == MISSING_ISSUE_TITLE:
             return True
 
     return False
+
 
 def has_pre_commit(repository):
     """
@@ -78,7 +79,7 @@ def has_pre_commit(repository):
     """
 
     try:
-        pre_commit_content = repository.get_contents(path='.pre-commit-config.yaml')
+        pre_commit_content = repository.get_contents(path=".pre-commit-config.yaml")
     except UnknownObjectException:
         logging.debug("missing pre-commit config")
         return False
@@ -88,6 +89,7 @@ def has_pre_commit(repository):
         return False
 
     return True
+
 
 def main():
     """
@@ -115,8 +117,6 @@ def main():
                     print("    has issue")
                 else:
                     print("    NEEDS issue")
-
-
 
 
 if __name__ == "__main__":
