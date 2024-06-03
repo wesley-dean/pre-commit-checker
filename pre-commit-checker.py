@@ -8,8 +8,6 @@ from github.GithubException import UnknownObjectException
 from github import Auth
 from dotenv import load_dotenv
 
-MISSING_ISSUE_TITLE = "Missing pre-commit configuration"
-
 def has_pre_commit_issue(repository):
     for issue in repository.get_issues(state = 'open'):
         if issue.title == MISSING_ISSUE_TITLE:
@@ -35,6 +33,12 @@ def main():
 
     pat = os.environ["PAT"]
     org = os.environ["ORG"]
+
+
+    if "MISSING_ISSUE_TITLE" in os.environ:
+        MISSING_ISSUE_TITLE = os.environ["MISSING_ISSUE_TITLE"]
+    else:
+        MISSING_ISSUE_TITLE = "Missing pre-commit configuration"
 
     logging.debug('Using PAT "%s**************************"', pat[:8])
     logging.debug('Using ORG "%s"', org)
