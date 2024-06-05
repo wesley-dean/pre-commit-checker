@@ -101,7 +101,7 @@ def has_pre_commit(repository):
         contents = repository.get_contents(path=PRE_COMMIT_CONFIG_FILENAME)
 
         if contents.size <= 1:
-            logging.info("pre-commit config is empty")
+            logging.info("pre-commit config is present but empty")
             return False
 
     except UnknownObjectException:
@@ -130,13 +130,15 @@ def create_issue(repository):
 
     issue_template = j2_environment.get_template(MISSING_ISSUE_BODY_FILENAME)
 
-    issue_body = issue_template.render(repository=repository)
+    issue_body = issue_template.render(
+        repository=repository, filename=PRE_COMMIT_CONFIG_FILENAME
+    )
 
     if DRY_RUN.lower() == "false":
         logging.debug("attempting to create issue")
         issue = repository.create_issue(title=MISSING_ISSUE_TITLE, body=issue_body)
         logging.debug("issue created with id %i", issue.id)
-        return issue.id
+        return issue.number
 
     logging.info("dry run, so issue not created")
     return 0
@@ -173,7 +175,7 @@ def main():
                     if issue_id == 0:
                         print(f"No issue created in {repo.name}")
                     else:
-                        print(f"Created {issue_id} in {repo.name}")
+                        print(f"Created {ORG}/{repo.name}#{issue_id}")
 
 
 if __name__ == "__main__":
