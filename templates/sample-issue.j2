@@ -1,6 +1,93 @@
-Please create a pre-commit configuration file
-for this repository and store it as:
+# Missing or Invalid pre-commit Configuration
 
-`.pre-commit-config.yaml`
+The {{ repository }} repository doesn't appear to have a valid pre-commit
+configuration.  The [pre-commit](https://pre-commit.com/) tool provides
+a scaffolding for running centrally-managed hooks before commits are formed.
+
+## Implications
+
+Typically, these pre-commit hooks are used to verify that stuff that
+shouldn't be in commits -- like secrets, credentials, API keys, tokens,
+certificates -- aren't allowed in.  If commits can't be created with
+secrets in them, then they can't be pushed upstream.
+
+Whether or not an individual developer does or does not run pre-commit
+can't be determined without looking at the developer's local files.
+It can't be determined if a developer bypasses the protections in
+pre-commit.  However, the lack of a pre-commit configuration file in
+a repository definitely means developers using ther repository
+definitely aren't using pre-commit.
+
+## Installing pre-commit
+
+Installing pre-commit can be performed with `pip` as follows:
+
+```bash
+# install the pre-commit tool
+pip install pre-commit
+
+# setup the local repo to use pre-commit
+pre-commit install
+```
+
+Each and every repository on a developer's system needs to be configured
+to use pre-commit separately.  Having one repository using pre-commit
+doesn't have any bearing on any other repository on that system.
+
+## Instructions
+
+Please create a pre-commit configuration file for this repository
+and store it as:
+
+`{{ filename }}`
 
 in the root of project.
+
+## Sample pre-commit-config.yaml
+
+This is a sample pre-commit-config.yaml file.  The versions of the
+tools have been frozen to specific releases that were current when
+this was written.  Updating pre-commit-config.yaml files with
+newer versions is a good idea and should be done frequently.  Updating
+versions can be done with the pre-commit tool itself:
+
+```bash
+# update pre-commit versions
+pre-commit autoupdate
+
+# add updated config file
+git add .pre-commit-config.yaml && git commit -m "Update pre-commit"
+
+# cleanup old versions
+pre-commit gc
+```
+
+```YAML
+---
+# pre-commit is a linter runner and GitHub hook manager
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+# Run `pre-commit autoupdate` now and then, why don't ya?
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: c4a0b883114b00d8d76b479c820ce7950211c99b # frozen: v4.5.0 # pragma: allowlist secret
+    hooks:
+      - id: detect-private-key
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: c4a0b883114b00d8d76b479c820ce7950211c99b # frozen: v4.5.0 # pragma: allowlist secret
+    hooks:
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+
+  - repo: https://github.com/zricethezav/gitleaks
+    rev: e815c559e3ac76227e8e7463cf3a6598b715687b # frozen: v8.18.1 # pragma: allowlist secret
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: 9abc55ee9fe266d06d4f64d301c0bf71b24ca3aa # frozen: v1.4.0 # pragma: allowlist secret
+    hooks:
+      - id: detect-secrets
+```

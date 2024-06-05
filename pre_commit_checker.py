@@ -16,6 +16,7 @@ a message (eventually it'll create an issue).
 
 import logging
 import os
+import yaml
 
 from jinja2 import Environment, FileSystemLoader
 from github import Github
@@ -29,7 +30,7 @@ PAT = os.environ["PAT"]
 ORG = os.environ["ORG"]
 
 MISSING_ISSUE_TITLE = os.getenv(
-    "MISSING_ISSUE_TITLE", "Missing pre-commit configuration"
+    "MISSING_ISSUE_TITLE", "Missing or invalid pre-commit configuration"
 )
 
 PRE_COMMIT_CONFIG_FILENAME = os.getenv(
@@ -102,6 +103,20 @@ def has_pre_commit(repository):
 
         if contents.size <= 1:
             logging.info("pre-commit config is present but empty")
+            return False
+
+        try:
+            parsed_config = yaml.safe_load(contents.content)
+            if "repos" not in parsed_config:
+                logging.info("invalid pre-commit config")
+                return False
+
+            if len(parsed_config["repos"]) == 0:
+                logging.info("invalid pre-commit config")
+                return False
+
+        except yaml.YAMLError:
+            logging.info("invalid pre-commit config")
             return False
 
     except UnknownObjectException:
