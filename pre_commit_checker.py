@@ -47,6 +47,11 @@ TEMPLATES_DIRECTORY = os.getenv(
     "templates"
 )
 
+DRY_RUN = os.getenv(
+    "DRY_RUN",
+    "True"
+)
+
 #SAMPLE_PRE_COMMIT_CONFIG = os.getenv(
 #    "SAMPLE_PRE_COMMIT_CONFIG",
 #    "sample-pre-commit-config.yaml"
@@ -137,12 +142,17 @@ def create_issue(repository):
         repository = repository
     )
 
-    issue = repository.create_issue(title=MISSING_ISSUE_TITLE,
+    logging.info("issue body = '%s'", issue_body)
+
+    if DRY_RUN.lower() == "false":
+        logging.debug("attempting to create issue")
+        issue = repository.create_issue(title=MISSING_ISSUE_TITLE,
             body=issue_body)
-
-
-    return issue.id
-
+        logging.debug("issue created with id %i", issue.id)
+        return issue.id
+    else:
+        logging.info("dry run, so issue not created")
+        return 0
 
 def main():
     """
@@ -170,6 +180,7 @@ def main():
                     print("    has issue")
                 else:
                     print("    NEEDS issue")
+                    create_issue(repo)
 
 
 if __name__ == "__main__":
