@@ -33,29 +33,21 @@ MISSING_ISSUE_TITLE = os.getenv(
 )
 
 PRE_COMMIT_CONFIG_FILENAME = os.getenv(
-    "PRE_COMMIT_CONFIG_FILENAME",
-    ".pre-commit-config.yaml"
+    "PRE_COMMIT_CONFIG_FILENAME", ".pre-commit-config.yaml"
 )
 
 MISSING_ISSUE_BODY_FILENAME = os.getenv(
-    "MISSING_ISSUE_BODY_FILENAME",
-    "sample-issue.j2"
+    "MISSING_ISSUE_BODY_FILENAME", "sample-issue.j2"
 )
 
-TEMPLATES_DIRECTORY = os.getenv(
-    "TEMPLATES_DIRECTORY",
-    "templates"
-)
+TEMPLATES_DIRECTORY = os.getenv("TEMPLATES_DIRECTORY", "templates")
 
-DRY_RUN = os.getenv(
-    "DRY_RUN",
-    "True"
-)
+DRY_RUN = os.getenv("DRY_RUN", "True")
 
-#SAMPLE_PRE_COMMIT_CONFIG = os.getenv(
+# SAMPLE_PRE_COMMIT_CONFIG = os.getenv(
 #    "SAMPLE_PRE_COMMIT_CONFIG",
 #    "sample-pre-commit-config.yaml"
-#)
+# )
 
 
 def has_pre_commit_issue(repository):
@@ -134,23 +126,21 @@ def create_issue(repository):
     @endcode
     """
 
-    j2_environment = Environment(loader = FileSystemLoader(TEMPLATES_DIRECTORY))
+    j2_environment = Environment(loader=FileSystemLoader(TEMPLATES_DIRECTORY))
 
     issue_template = j2_environment.get_template(MISSING_ISSUE_BODY_FILENAME)
 
-    issue_body = issue_template.render(
-        repository = repository
-    )
+    issue_body = issue_template.render(repository=repository)
 
     if DRY_RUN.lower() == "false":
         logging.debug("attempting to create issue")
-        issue = repository.create_issue(title=MISSING_ISSUE_TITLE,
-            body=issue_body)
+        issue = repository.create_issue(title=MISSING_ISSUE_TITLE, body=issue_body)
         logging.debug("issue created with id %i", issue.id)
         return issue.id
-    else:
-        logging.info("dry run, so issue not created")
-        return 0
+
+    logging.info("dry run, so issue not created")
+    return 0
+
 
 def main():
     """
@@ -162,9 +152,9 @@ def main():
     logging.debug('Using ORG "%s"', ORG)
 
     logging.basicConfig(level=logging.INFO)
-    g = Github(PAT)
+    github = Github(PAT)
 
-    for repo in g.get_organization(ORG).get_repos():
+    for repo in github.get_organization(ORG).get_repos():
         logging.info("Checking repo '%s'", repo.name)
 
         if repo.archived:
@@ -184,6 +174,7 @@ def main():
                         print(f"No issue created in {repo.name}")
                     else:
                         print(f"Created {issue_id} in {repo.name}")
+
 
 if __name__ == "__main__":
     main()
