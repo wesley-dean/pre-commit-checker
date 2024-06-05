@@ -146,7 +146,7 @@ def create_issue(repository):
     issue_template = j2_environment.get_template(MISSING_ISSUE_BODY_FILENAME)
 
     issue_body = issue_template.render(
-        repository=repository, filename=PRE_COMMIT_CONFIG_FILENAME
+        repository=repository.full_name, filename=PRE_COMMIT_CONFIG_FILENAME
     )
 
     if DRY_RUN.lower() == "false":
