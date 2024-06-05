@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 @file pre_commit_check.py
@@ -21,6 +21,8 @@ from jinja2 import Environment, FileSystemLoader
 from github import Github
 from github.GithubException import UnknownObjectException
 from dotenv import load_dotenv
+
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 PAT = os.environ["PAT"]
@@ -99,13 +101,14 @@ def has_pre_commit(repository):
     """
 
     try:
-        pre_commit_content = repository.get_contents(path=PRE_COMMIT_CONFIG_FILENAME)
-    except UnknownObjectException:
-        logging.debug("missing pre-commit config")
-        return False
+        contents = repository.get_contents(path=PRE_COMMIT_CONFIG_FILENAME)
 
-    if not pre_commit_content:
-        logging.debug("empty pre-commit config")
+        if contents.size <= 1:
+            logging.info("pre-commit config is empty")
+            return False
+
+    except UnknownObjectException:
+        logging.info("missing pre-commit config")
         return False
 
     return True
