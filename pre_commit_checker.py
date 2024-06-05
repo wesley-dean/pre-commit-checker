@@ -142,8 +142,6 @@ def create_issue(repository):
         repository = repository
     )
 
-    logging.info("issue body = '%s'", issue_body)
-
     if DRY_RUN.lower() == "false":
         logging.debug("attempting to create issue")
         issue = repository.create_issue(title=MISSING_ISSUE_TITLE,
@@ -173,15 +171,19 @@ def main():
             logging.info("  repo is archived; skipping")
         else:
             if has_pre_commit(repo):
-                print("  has pre-commit")
+                logging.info("  has pre-commit")
             else:
-                print("  Does NOT have pre-commit")
+                logging.info("  Does NOT have pre-commit")
                 if has_pre_commit_issue(repo):
-                    print("    has issue")
+                    logging.info("    has issue")
                 else:
-                    print("    NEEDS issue")
-                    create_issue(repo)
+                    logging.info("    NEEDS issue")
+                    issue_id = create_issue(repo)
 
+                    if issue_id == 0:
+                        print(f"No issue created in {repo.name}")
+                    else:
+                        print(f"Created {issue_id} in {repo.name}")
 
 if __name__ == "__main__":
     main()
