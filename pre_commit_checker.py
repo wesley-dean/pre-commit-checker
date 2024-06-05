@@ -44,11 +44,7 @@ MISSING_ISSUE_BODY_FILENAME = os.getenv(
 TEMPLATES_DIRECTORY = os.getenv("TEMPLATES_DIRECTORY", "templates")
 
 DRY_RUN = os.getenv("DRY_RUN", "True")
-
-# SAMPLE_PRE_COMMIT_CONFIG = os.getenv(
-#    "SAMPLE_PRE_COMMIT_CONFIG",
-#    "sample-pre-commit-config.yaml"
-# )
+API_URL = os.getenv("API_URL", "https://api.github.com")
 
 
 def has_pre_commit_issue(repository):
@@ -169,7 +165,7 @@ def main():
     logging.debug('Using ORG "%s"', ORG)
 
     logging.basicConfig(level=logging.INFO)
-    github = Github(PAT)
+    github = Github(login_or_token=PAT, base_url=API_URL)
 
     for repo in github.get_organization(ORG).get_repos():
         logging.info("Checking repo '%s'", repo.name)
