@@ -20,7 +20,7 @@ import yaml
 
 from jinja2 import Environment, FileSystemLoader
 from github import Github
-from github.GithubException import UnknownObjectException
+from github.GithubException import UnknownObjectException, GithubException
 from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
@@ -146,10 +146,13 @@ def create_issue(repository):
     )
 
     if DRY_RUN.lower() == "false":
-        logging.debug("attempting to create issue")
-        issue = repository.create_issue(title=MISSING_ISSUE_TITLE, body=issue_body)
-        logging.debug("issue created with id %i", issue.id)
-        return issue.number
+        try:
+            logging.debug("attempting to create issue")
+            issue = repository.create_issue(title=MISSING_ISSUE_TITLE, body=issue_body)
+            logging.debug("issue created with id %i", issue.id)
+            return issue.number
+        except GithubException:
+            logging.error("Issue creation failed due to GitHub Exception")
 
     logging.info("dry run, so issue not created")
     return 0
