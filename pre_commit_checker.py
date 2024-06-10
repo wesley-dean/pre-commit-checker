@@ -26,8 +26,8 @@ from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
-PAT = os.environ["PAT"]
-ORG = os.environ["ORG"]
+PAT = str(os.environ["PAT"])
+ORG = str(os.environ["ORG"])
 
 MISSING_ISSUE_TITLE = os.getenv(
     "MISSING_ISSUE_TITLE", "Missing or invalid pre-commit configuration"
