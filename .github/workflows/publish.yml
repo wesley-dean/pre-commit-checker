@@ -80,7 +80,7 @@ jobs:
             else
               echo "${{ secrets.QUAY_USERNAME }}/${{ github.event.repository.name }}"
             fi
-          ) >> $GITHUB_OUTPUT
+          ) >> "$GITHUB_OUTPUT"
 
       - name: Login to GitHub Packages
         uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # pin@v2
