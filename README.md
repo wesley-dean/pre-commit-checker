@@ -85,9 +85,12 @@ Optional values:
   non-compliant repositories (i.e., it looks to see if issues
   exist with this title before creating new issues); the
   default is `Missing pre-commit configuration`
-* **MISSING_ISSUE_BODY_FILENAME**: the filename for the Jinja2
+* **OPEN_ISSUE_BODY_FILENAME**: the filename for the Jinja2
   template used to create new issues; the default is
-  `sample-issue.j2`
+  `open-issue.j2`
+* **CLOSE_ISSUE_BODY_FILENAME**: the filename for the Jinja2
+  template used for the closing comment on an issue; the
+  default is `close-issue.j2`
 * **TEMPLATES_DIRECTORY**: this is the directory where the Jinja2
   templates are stored; the default is `templates/`
 * **API_URL**: the base URL to a GitHub API to query; if
