@@ -38,9 +38,9 @@ PRE_COMMIT_CONFIG_FILENAME = os.getenv(
     "PRE_COMMIT_CONFIG_FILENAME", ".pre-commit-config.yaml"
 )
 
-MISSING_ISSUE_BODY_FILENAME = os.getenv(
-    "MISSING_ISSUE_BODY_FILENAME", "sample-issue.j2"
-)
+OPEN_ISSUE_BODY_FILENAME = os.getenv("OPEN_ISSUE_BODY_FILENAME", "open-issue.j2")
+
+CLOSE_ISSUE_BODY_FILENAME = os.getenv("CLOSE_ISSUE_FILENAME", "close-issue.j2")
 
 TEMPLATES_DIRECTORY = os.getenv("TEMPLATES_DIRECTORY", "templates")
 
@@ -140,7 +140,7 @@ def create_issue(repository):
 
     j2_environment = Environment(loader=FileSystemLoader(TEMPLATES_DIRECTORY))
 
-    issue_template = j2_environment.get_template(MISSING_ISSUE_BODY_FILENAME)
+    issue_template = j2_environment.get_template(OPEN_ISSUE_BODY_FILENAME)
 
     issue_body = issue_template.render(
         repository=repository.full_name, filename=PRE_COMMIT_CONFIG_FILENAME
@@ -148,6 +148,10 @@ def create_issue(repository):
 
     if DRY_RUN.lower() == "false":
         try:
+            if not repository.has_issues:
+                logging.info("repository doesn't support issues")
+                return 0
+
             logging.debug("attempting to create issue")
             issue = repository.create_issue(title=MISSING_ISSUE_TITLE, body=issue_body)
             logging.debug("issue created with id %i", issue.id)
@@ -155,8 +159,58 @@ def create_issue(repository):
         except GithubException:
             logging.error("Issue creation failed due to GitHub Exception")
 
-    logging.info("dry run, so issue not created")
+    else:
+        logging.info("dry run, so issue not created")
+
     return 0
+
+
+def close_issues(repository):
+    """
+    @fn close_issues()
+    @brief scan for open issues; when found, comment on and close them
+    @details
+    The tool will create an issue in a repository when there is no
+    valid pre-commit configuration file (i.e., it's not present, it's
+    not valid YAML, or it's missing the required content) via
+    create_issue().  This does the opposite and searches for open
+    issues and, when found, comments on them and closes them.
+    @param repository the repo to scan and potentially update
+    @returns the number of issues closed
+    @par Example
+    @par code
+    if has_issue(repo):
+        close_issues(repo)
+    @par endcode
+    """
+
+    j2_environment = Environment(loader=FileSystemLoader(TEMPLATES_DIRECTORY))
+
+    comment_template = j2_environment.get_template(CLOSE_ISSUE_BODY_FILENAME)
+
+    comment_body = comment_template.render(
+        repository=repository.full_name, filename=PRE_COMMIT_CONFIG_FILENAME
+    )
+
+    closed_issues = 0
+
+    for issue in repository.get_issues(state="open"):
+        if issue.title == MISSING_ISSUE_TITLE:
+            closed_issues += 1
+            logging.info("Closing issue #%i", issue.number)
+
+            if DRY_RUN.lower() == "false":
+                try:
+                    logging.debug("  Adding comment")
+                    issue.create_comment(comment_body)
+                    logging.debug("  Marking issue as completed")
+                    issue.edit(state="closed", state_reason="completed")
+                except GithubException:
+                    logging.error("Issue closing failed due to GitHuh Exception")
+            else:
+                logging.info("dry run, so issue not closed")
+
+    return closed_issues
 
 
 def main():
@@ -179,6 +233,8 @@ def main():
         else:
             if has_pre_commit(repo):
                 logging.info("  has pre-commit")
+                if has_pre_commit_issue(repo):
+                    close_issues(repo)
             else:
                 logging.info("  Does NOT have pre-commit")
                 if has_pre_commit_issue(repo):

@@ -1,4 +1,4 @@
-PyGithub >= 1.55
+PyGithub >= 1.59
 python-dotenv >= 0.20.0
 pyyaml >= 6.0.1
 jinja2 >= 3.0.3
