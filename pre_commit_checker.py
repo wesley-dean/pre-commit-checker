@@ -14,6 +14,7 @@ a pre-commit configuration file; if not, it will print
 a message (eventually it'll create an issue).
 """
 
+import base64
 import logging
 import os
 import yaml
@@ -102,17 +103,17 @@ def has_pre_commit(repository):
             return False
 
         try:
-            parsed_config = yaml.safe_load(contents.content)
+            parsed_config = yaml.safe_load(base64.b64decode(contents.content))
             if "repos" not in parsed_config:
-                logging.info("invalid pre-commit config")
+                logging.info("invalid pre-commit config -- missing 'repos' dictionary")
                 return False
 
             if len(parsed_config["repos"]) == 0:
-                logging.info("invalid pre-commit config")
+                logging.info("invalid pre-commit config -- no defined repos")
                 return False
 
         except yaml.YAMLError:
-            logging.info("invalid pre-commit config")
+            logging.info("invalid pre-commit config -- invalid YAML")
             return False
 
     except UnknownObjectException:
