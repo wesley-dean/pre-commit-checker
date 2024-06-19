@@ -1,6 +1,6 @@
 # Missing or Invalid pre-commit Configuration
 
-The **{{ repository }}** repository doesn't appear to have a valid pre-commit
+The **{{ repository | safe }}** repository doesn't appear to have a valid pre-commit
 configuration.  The pre-commit tool provides a scaffolding for running
 centrally-managed hooks before commits are formed.
 
@@ -41,7 +41,7 @@ doesn't have any bearing on any other repository on that system.
 Please create a pre-commit configuration file for this repository
 and store it as:
 
-`{{ filename }}`
+`{{ filename | safe}}`
 
 in the root of project.
 

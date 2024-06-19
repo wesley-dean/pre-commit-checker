@@ -14,4 +14,4 @@ HEALTHCHECK NONE
 
 USER "${RUNNER}"
 ENTRYPOINT ["python", "./pre_commit_checker.py"]
-COPY pre_commit_checker.py templates/ "${WORKDIR}" 
+COPY pre_commit_checker.py templates/ "${WORKDIR}"/

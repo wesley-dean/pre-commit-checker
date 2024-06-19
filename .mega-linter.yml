@@ -6,23 +6,23 @@ ADDITIONAL_EXCLUDED_DIRECTORIES: [report, megalinter-reports, .git]
 IGNORE_GITIGNORED_FILES: true
 
 # attempt to apply fixes at this time
-APPLY_FIXES: none
+APPLY_FIXES: "all"
 
-# enable only the relevant repository-level security scanners
-ENABLE_LINTERS:
+# Disable devskim as it's reporting an error with no log message
+DISABLE_LINTERS:
   [
-    REPOSITORY_CHECKOV,
-    REPOSITORY_GITLEAKS,
-    REPOSITORY_GRYPE,
-    REPOSITORY_KICS,
-    REPOSITORY_SECRETLINT,
-    REPOSITORY_SEMGREP,
-    REPOSITORY_TRUFFLEHOG,
-    REPOSITORY_SYFT,
+    REPOSITORY_DEVSKIM,
+    SPELL_MISSPELL,
+    SPELL_CSPELL,
+    SPELL_PROSELINT,
+    COPYPASTE_JSCPD,
+    BASH_EXEC,
+    SPELL_LYCHEE,
+    MARKDOWN_MARKDOWN_LINK_CHECK,
   ]
 
 # scan everything, no only new / updated files
-VALIDATE-ALL-CODEBASE: true
+VALIDATE_ALL_CODEBASE: true
 
 # don't print the alpaca -- it's cute, but we don't need it in the logs
 PRINT_ALPACA: false

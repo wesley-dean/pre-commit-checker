@@ -76,7 +76,6 @@ Required values:
   create issues on the repositories that don't meet the tool's
   requirements.
 * **ORG**: the GitHub Organization to scan for repos to check
-* **DRY_RUN**: This must be set to 'False' to actually create issues
 
 Optional values:
 
@@ -98,3 +97,6 @@ Optional values:
   variable to point to the instance; otherwise, the default,
   `https://api.github.com` is sufficient for repositories
   hosted on GitHub.com.
+* **DRY_RUN**: This must be set to 'False' to actually create issues
+* **LOG_LEVEL**: the threshold for displaying log messages
+  10 = Debug, 20 = Info (default), 30 = Warning, 40 = Error, 50 = Critcal
