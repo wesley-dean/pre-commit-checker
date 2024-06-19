@@ -17,6 +17,7 @@ a message (eventually it'll create an issue).
 import base64
 import logging
 import os
+import re
 import sys
 import time
 
@@ -80,15 +81,19 @@ if ORG is None:
 # pre-commit configuration file.  It doesn't look at
 # author or labels or assignees or special strings;
 # it just looks for this exact title.
-MISSING_ISSUE_TITLE = os.getenv(
-    "MISSING_ISSUE_TITLE", "Missing or invalid pre-commit configuration"
+MISSING_ISSUE_TITLE = re.sub(
+    r"[^\w\s]+",
+    "",
+    os.getenv("MISSING_ISSUE_TITLE", "Missing or invalid pre-commit configuration"),
 )
 
 ##
 # @var str PRE_COMMIT_CONFIG_FILENAME
 # @brief the name of the file to look for
-PRE_COMMIT_CONFIG_FILENAME = os.getenv(
-    "PRE_COMMIT_CONFIG_FILENAME", ".pre-commit-config.yaml"
+PRE_COMMIT_CONFIG_FILENAME = re.sub(
+    r"[^\w\s.\/_-]",
+    "",
+    os.getenv("PRE_COMMIT_CONFIG_FILENAME", ".pre-commit-config.yaml"),
 )
 
 ##
