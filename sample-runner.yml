@@ -1,0 +1,41 @@
+---
+
+name: Runner
+
+# yamllint disable-line rule:truthy
+on:
+  #  schedule:
+  #    - cron: "0 0,4,8,12,16,20 * * *"  # every four hours, every day
+  workflow_dispatch:
+
+permissions: read-all
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  PAT: ${{ secrets.PAT }}
+  DELAY: ${{ vars.DELAY }}
+  DRY_RUN: ${{ vars.DRY_RUN }}
+  LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+  ORG: ${{ vars.ORG }}
+
+jobs:
+  scanner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: "ccsq-cqp/pre-commit-checker"
+          token: "${{ secrets.PAT }}"
+
+      - name: Install dependencies
+        uses: actions/setup-python@v5
+      - run: pip install -r requirements.txt
+
+      - name: Scan
+        run: python pre_commit_checker.py
