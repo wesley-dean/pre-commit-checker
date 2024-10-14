@@ -49,7 +49,7 @@ jobs:
       # Upload MegaLinter artifacts
       - name: Archive production artifacts
         if: always()
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # pin@v3
+        uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249 # pin@v3
         with:
           name: MegaLinter reports
           path: |
