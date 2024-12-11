@@ -18,7 +18,7 @@ jobs:
     permissions: write-all
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # pin@v3
+        uses: actions/checkout@cbb722410c2e876e24abbe8de2cc27693e501dcb # pin@v3
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@5927c834f5b4fdf503fca6f4c7eccda82949e1ee # pin@v2
@@ -137,7 +137,7 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
 
       - name: update DockerHub description
-        uses: christian-korneck/update-container-description-action@d36005551adeaba9698d8d67a296bd16fa91f8e8 # pin@v1
+        uses: christian-korneck/update-container-description-action@cf2977b0f3d189227f140ecbc6402c5a042b34e4 # pin@v1
         if: ${{ steps.customvars.outputs.dockerhub == 'true' }}
         with:
           destination_container_repo: ${{ steps.customvars.outputs.dockerhub_image }}
@@ -147,7 +147,7 @@ jobs:
           DOCKER_PASS: ${{ secrets.DOCKERHUB_PAT }}
 
       - name: update Quay description
-        uses: christian-korneck/update-container-description-action@d36005551adeaba9698d8d67a296bd16fa91f8e8 # pin@v1
+        uses: christian-korneck/update-container-description-action@cf2977b0f3d189227f140ecbc6402c5a042b34e4 # pin@v1
         if: ${{ steps.customvars.outputs.quay == 'true' }}
         with:
           destination_container_repo: ${{ steps.customvars.outputs.quay_image }}
