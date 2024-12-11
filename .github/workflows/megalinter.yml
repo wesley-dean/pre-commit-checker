@@ -87,7 +87,7 @@ jobs:
 
       - name: Check to see if the SARIF a was generated
         id: sarif_file_exists
-        uses: andstor/file-existence-action@076e0072799f4942c8bc574a82233e1e4d13e9d6 # pin@v2
+        uses: andstor/file-existence-action@31a502724c77ada11ba0b3442e34757182ccdbd3 # pin@v2
         with:
           files: "megalinter-reports/megalinter-report.sarif"
 
