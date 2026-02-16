@@ -1,4 +1,4 @@
-FROM python:3.15.0a6-slim
+FROM python:3.15.0a6
 
 ENV RUNNER="runner"
 ENV WORKDIR="/workdir/"
@@ -7,7 +7,7 @@ RUN mkdir -p "${WORKDIR}"
 
 WORKDIR "${WORKDIR}"
 COPY requirements.txt "${WORKDIR}"
-RUN ( getent passwd "${RUNNER}" || adduser --disabled-password "${RUNNER}" ) \
+RUN ( getent passwd "${RUNNER}" || adduser --disabled-password --gecos "" "${RUNNER}" ) \
 && pip install --no-cache-dir -r "${WORKDIR}requirements.txt"
 
 HEALTHCHECK NONE
