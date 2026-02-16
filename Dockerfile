@@ -8,10 +8,10 @@ RUN mkdir -p "${WORKDIR}"
 # Needed because pip will compile some deps (e.g., cffi) on Python 3.15 alpha
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      gcc \
-      build-essential \
-      libffi-dev \
-      python3-dev \
+      gcc>=4\
+      build-essential>=12 \
+      libffi-dev>=3 \
+      python3-dev>=3.13 \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR "${WORKDIR}"
