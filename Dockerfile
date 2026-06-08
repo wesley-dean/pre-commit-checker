@@ -1,4 +1,4 @@
-FROM python:3.15.0a8-slim
+FROM python:3.15.0b2-slim
 
 ENV RUNNER="runner"
 ENV WORKDIR="/workdir/"
