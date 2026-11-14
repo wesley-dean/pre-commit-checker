@@ -100,3 +100,24 @@ Optional values:
 * **DRY_RUN**: This must be set to 'False' to actually create issues
 * **LOG_LEVEL**: the threshold for displaying log messages
   10 = Debug, 20 = Info (default), 30 = Warning, 40 = Error, 50 = Critcal
+
+
+## Running unit tests
+
+Install the application's Python dependencies, then run the standard-library
+`unittest` suite from the repository root:
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+The unit tests are **offline**. They replace GitHub API clients, repositories,
+and issues with mocks, and use local Jinja2 templates and encoded YAML test
+fixtures. No real GitHub token or organization is needed, and the tests never
+write to a remote repository. The CI job named `test-unit` runs the same
+suite on pull requests and pushes to `main`.
+
+Tests describe the application's existing validation and issue-management
+behavior. They do not currently require full pre-commit schema validation or
+correct separate configuration/issue-counting defects.
