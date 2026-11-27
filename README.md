@@ -136,3 +136,11 @@ Routine Dependabot PRs are retired with migration references. Verified
 immutable action SHA pins remain; unverifiable versions may temporarily
 use moving references pending a reviewed Renovate update. A merged PR
 cannot establish that a Jenkins Renovate job has executed.
+
+Three historical action commit references lacked an independently verified
+upstream release mapping and now use moving refs pending a Renovate update:
+`actions/checkout@v4`, `github/codeql-action/upload-sarif@v2`, and
+`wesley-dean/publish_container@v1.0.19`. The last is a privileged
+container-publication action. The commit-to-tag mapping and even the
+availability of the exact historical publishing tag have not been verified;
+the next Renovate PR must be reviewed before relying on that release path.
