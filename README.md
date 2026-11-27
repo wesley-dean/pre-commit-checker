@@ -121,3 +121,26 @@ suite on pull requests and pushes to `main`.
 Tests describe the application's existing validation and issue-management
 behavior. They do not currently require full pre-commit schema validation or
 correct separate configuration/issue-counting defects.
+
+## Dependency maintenance
+
+Routine GitHub Actions, pip, and Docker version updates are managed through
+the existing central Jenkins Renovate service, already enrolled through
+root `renovate.json`. The three Dependabot version-update ecosystems set
+`open-pull-requests-limit: 0` while independently triggered Dependabot
+security updates remain available. Existing Dependabot-specific auto-merge
+logic is retained without extending its privileges to Renovate. Human
+review and required checks continue to govern dependency changes.
+
+Routine Dependabot PRs are retired with migration references. Verified
+immutable action SHA pins remain; unverifiable versions may temporarily
+use moving references pending a reviewed Renovate update. A merged PR
+cannot establish that a Jenkins Renovate job has executed.
+
+Three historical action commit references lacked an independently verified
+upstream release mapping and now use moving refs pending a Renovate update:
+`actions/checkout@v4`, `github/codeql-action/upload-sarif@v2`, and
+`wesley-dean/publish_container@v1.0.19`. The last is a privileged
+container-publication action. The commit-to-tag mapping and even the
+availability of the exact historical publishing tag have not been verified;
+the next Renovate PR must be reviewed before relying on that release path.
